@@ -1,0 +1,137 @@
+-- DML Data Manipulation Language - allows one to interact with data inside the database
+-- Adding data
+INSERT movietitle (`movietitle`,`releaseyear`,`ratings`,`synopsis`,`dateadded`,`moviestatus`,`deleted`,`director`,`addedby`)
+VALUES ('Spiderman',2002,9.8,'A youngman gets stung by a spider and gains super powers',NOW(),'released',0,'Sam Raimi',1);
+-- now() function fetches the current date and rime at the moment
+-- one query does not necessarily need a semi colon but more than 1
+INSERT movietitle (`movietitle`,`releaseyear`,`ratings`,`synopsis`,`dateadded`,`moviestatus`,`deleted`,`director`,`addedby`)
+VALUES ('Bruce Almighty',1998,7.5,'A man blames God for all his misfortunes until God allows him to take his place for seven days',NOW(),'released',0,'Delroy Lindo',1);
+
+INSERT movietitle (`movietitle`,`releaseyear`,`ratings`,`synopsis`,`dateadded`,`moviestatus`,`deleted`,`director`,`addedby`)
+VALUES ('Exit Wounds',1998,9.5,'A man blames God for all his misfortunes until God allows him to take his place for seven days',NOW(),'released',0,'Stephen Seagull',1);
+-- SELECT statement -used for querying data from the database
+SELECT * FROM movietitle -- selects all the data from the table
+-- selective select
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle;
+-- FILTER data --WHERE clause
+-- comparison operators
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE releaseyear=2010;
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE releaseyear!=2010;-- not releasedin 2010
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE releaseyear<=2001;
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE releaseyear>2001;
+-- adding logical operators
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE releaseyear>2000 AND ratings>5;
+-- searching patterns --we use LIKE
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE synopsis LIKE '%man';-- ends with man
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE synopsis LIKE '%man%';-- contains man
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE synopsis LIKE 'man%';-- starts with man
+-- Sorting data -we use ORDER BY clause
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+ORDER BY releaseyear ASC;-- ascending
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+ORDER BY releaseyear DESC;-- descending
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+ORDER BY releaseyear,ratings;
+-- combination
+SELECT movieId,synopsis,movietitle,releaseyear,ratings
+FROM movietitle
+WHERE releaseyear=1998
+ORDER BY releaseyear,ratings;
+-- Functions-In built functions
+-- Scalar functions -works on specific data in a column
+-- There are more of the functions just google
+-- string functions
+SELECT movieId,UPPER(synopsis),movietitle,releaseyear,ratings
+FROM movietitle;-- converts all the data inside synopsis column to uppercase
+-- Aliases -AS mayinclude nut its not a must
+SELECT movieId,UPPER(synopsis) AS uppercasesynopsis,movietitle,releaseyear,ratings
+FROM movietitle;-- converts all the data inside synopsis column to uppercase
+-- getting the length
+SELECT movieId,UPPER(synopsis) AS uppercasesynopsis,movietitle,releaseyear,ratings,CHAR_LENGTH (movietitle) AS charactersintitle
+FROM movietitle;
+-- fetching some characters
+SELECT movieId,UPPER(synopsis) AS uppercasesynopsis,movietitle,releaseyear,ratings,CHAR_LENGTH (movietitle) AS charactersintitle,LEFT (movietitle,3)abbreviation
+FROM movietitle;
+-- aggregate functions
+SELECT COUNT(movieId) moviestotal
+FROM movietitle;
+
+SELECT AVG(ratings)
+FROM movietitle;
+
+SELECT SUM(movieId)
+FROM movietitle;
+
+SELECT MAX(releaseyear)
+FROM movietitle;
+
+SELECT MIN(releaseyear)
+FROM movietitle;
+-- grouping functions- we use 
+-- group by clause
+SELECT releaseyear,COUNT(movieId) AS moviesreleased
+FROM movietitle
+GROUP BY releaseyear;
+-- having clause
+SELECT releaseyear,COUNT(movieId) AS moviesreleased
+FROM movietitle
+GROUP BY releaseyear
+HAVING COUNT(movieId)>1;
+
+
+
+INSERT INTO users (`userId`,`username`,`firstname`,`lastname`)
+VALUES ('','admin','system','administrator');
+	
+INSERT INTO users (`userId`,`username`,`firstname`,`lastname`)
+VALUES ('','support','user','support');
+
+-- JOINS allow us to combine table into a single result set
+-- INNER JOIN -makes sure that data matches both tables (matching fields)
+SELECT movieId,synopsis,movietitle,releaseyear,ratings,addedby,firstname,lastname
+FROM movietitle AS m,users AS u
+WHERE m.`addedby`=u.`userId`;
+-- simmilar to
+SELECT movieId,synopsis,movietitle,releaseyear,ratings,addedby,firstname,lastname
+FROM movietitle AS m INNER JOIN users AS u
+ON m.`addedby`=u.`userId`;
+-- more
+SELECT movieId,synopsis,movietitle,releaseyear,ratings,CONCAT (firstname,' ',lastname)addedbyname
+FROM movietitle AS m,users AS u
+WHERE m.`addedby`=u.`userId`;	
+
+SELECT movieId,synopsis,movietitle,releaseyear,ratings,CONCAT (firstname,' ',lastname)addedbyname
+FROM movietitle AS m INNER JOIN users AS u
+ON m.`addedby`=u.`userId`;
+
+-- OUTER JOIN
+SELECT movieId,synopsis,movietitle,releaseyear,ratings,CONCAT (firstname,' ',lastname)addedbyname
+FROM movietitle AS m LEFT OUTER JOIN users AS u
+ON m.`addedby`=u.`userId`;
